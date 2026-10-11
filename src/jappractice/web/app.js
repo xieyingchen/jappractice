@@ -4,6 +4,7 @@ const state = {
   mode: "all",
   current: null,
   answered: false,
+  firstTryDone: false,
   correct: 0,
   wrong: 0,
   queue: [],
@@ -111,6 +112,7 @@ function showIdle() {
 function showPrompt(word) {
   state.current = word;
   state.answered = false;
+  state.firstTryDone = false;
   elements.meaning.textContent = word.meaning;
   elements.kindTag.textContent = word.kind === "verb" ? "动词" : word.adjective_type;
   elements.promptLabel.textContent =
@@ -188,19 +190,8 @@ function nextWord() {
   showPrompt(state.queue.shift());
 }
 
-function showFeedback(isCorrect, submitted) {
+function showFeedback(isCorrect) {
   const word = state.current;
-  state.answered = true;
-  state.remaining -= 1;
-  if (isCorrect) state.correct += 1;
-  else {
-    state.wrong += 1;
-    state.errors.push({ word, answer: submitted });
-  }
-
-  updateStats();
-  updateProgress();
-  elements.input.disabled = true;
   elements.feedback.hidden = false;
   elements.resultBadge.textContent = isCorrect ? "正确" : "错误";
   elements.resultBadge.className = `result-badge ${isCorrect ? "is-correct" : "is-wrong"}`;
@@ -209,9 +200,19 @@ function showFeedback(isCorrect, submitted) {
   elements.detailGrid.replaceChildren();
   renderDetails(word, elements.detailGrid);
 
-  elements.submit.textContent = state.remaining > 0 ? "下一题" : "查看结果";
-  elements.submit.disabled = false;
-  elements.submit.focus();
+  if (isCorrect) {
+    state.answered = true;
+    state.remaining -= 1;
+    updateProgress();
+    elements.input.disabled = true;
+    elements.submit.textContent = state.remaining > 0 ? "下一题" : "查看结果";
+    elements.submit.disabled = false;
+    elements.submit.focus();
+  } else {
+    // 答错后留在当前词：展示答案供对照，输入框保持可编辑直到答对
+    elements.input.value = "";
+    elements.input.focus();
+  }
 }
 
 function finishTest() {
@@ -341,13 +342,24 @@ elements.form.addEventListener("submit", (event) => {
     nextWord();
     return;
   }
-  const raw = elements.input.value;
-  const submitted = normalizeAnswer(raw);
+  const submitted = normalizeAnswer(elements.input.value);
   if (!submitted) {
     elements.input.focus();
     return;
   }
-  showFeedback(state.current.answers.includes(submitted), submitted);
+  const word = state.current;
+  const isCorrect = word.answers.includes(submitted);
+  // 按单词统计：首次作答即决定正确/错误归类与错题记录，重试不再计入
+  if (!state.firstTryDone) {
+    state.firstTryDone = true;
+    if (isCorrect) state.correct += 1;
+    else {
+      state.wrong += 1;
+      state.errors.push({ word, answer: submitted });
+    }
+    updateStats();
+  }
+  showFeedback(isCorrect);
 });
 
 elements.startButton.addEventListener("click", startTest);
