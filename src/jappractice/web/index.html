@@ -32,6 +32,18 @@
         </div>
       </section>
 
+      <section class="test-toolbar" aria-label="测试控制">
+        <div class="test-toolbar-buttons">
+          <button class="primary-button test-start" id="startButton" type="button">开始测试</button>
+          <button class="ghost-button" id="errorListButton" type="button">
+            错题单词 <strong id="errorCount">0</strong>
+          </button>
+        </div>
+        <p class="test-progress" id="testProgress" hidden>
+          剩余 <strong id="remainingCount">0</strong> / <span id="totalCount">0</span>
+        </p>
+      </section>
+
       <section class="quiz-card" id="quizCard" aria-live="polite">
         <div class="prompt-block">
           <span class="kind-tag" id="kindTag">准备中</span>
@@ -67,9 +79,32 @@
           </div>
           <dl class="detail-grid" id="detailGrid"></dl>
         </div>
+
+        <div class="summary-block" id="summaryBlock" hidden>
+          <span class="kind-tag">测试完成</span>
+          <h2 class="summary-title">完成当前测试</h2>
+          <dl class="detail-grid summary-grid">
+            <div class="detail-item"><dt>测试单词</dt><dd id="summaryTotal">0</dd></div>
+            <div class="detail-item"><dt>正确</dt><dd id="summaryCorrect">0</dd></div>
+            <div class="detail-item"><dt>错误</dt><dd id="summaryWrong">0</dd></div>
+            <div class="detail-item"><dt>正确率</dt><dd id="summaryAccuracy">—</dd></div>
+          </dl>
+          <div class="summary-actions">
+            <button class="primary-button" id="exportButton" type="button" hidden>导出错题列表</button>
+            <p class="keyboard-hint">调整词类后点击「开始测试」可再测一轮</p>
+          </div>
+        </div>
       </section>
 
       <p class="error-message" id="errorMessage" role="alert" hidden></p>
+
+      <dialog class="error-dialog" id="errorDialog">
+        <div class="dialog-head">
+          <h3>本次测试错题</h3>
+          <button class="ghost-button" id="closeDialogButton" type="button">关闭</button>
+        </div>
+        <div class="error-list" id="errorList"></div>
+      </dialog>
     </main>
     <script src="/app.js" defer></script>
   </body>
