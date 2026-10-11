@@ -114,7 +114,12 @@ function showPrompt(word) {
   state.answered = false;
   state.firstTryDone = false;
   elements.meaning.textContent = word.meaning;
-  elements.kindTag.textContent = word.kind === "verb" ? "动词" : word.adjective_type;
+  elements.kindTag.textContent =
+    word.kind === "verb"
+      ? word.transitivity === "未标注"
+        ? "动词"
+        : word.transitivity
+      : word.adjective_type;
   elements.promptLabel.textContent =
     word.kind === "verb" ? "请输入辞书形或ます形" : "请输入对应的日文原型";
   elements.input.placeholder = word.kind === "verb" ? "如：食べる / 食べます" : "输入汉字或假名";
