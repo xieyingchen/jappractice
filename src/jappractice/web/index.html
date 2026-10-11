@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="使用《新标日》词库进行日语动词和形容词拼写练习" />
+    <title>日语拼写练习</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">JAPANESE SPELLING</p>
+          <h1>日语拼写练习</h1>
+        </div>
+        <div class="session-stats" aria-label="本次练习统计">
+          <span>正确 <strong id="correctCount">0</strong></span>
+          <span>错误 <strong id="wrongCount">0</strong></span>
+        </div>
+      </header>
+
+      <section class="mode-panel" aria-labelledby="modeTitle">
+        <div>
+          <p class="section-label" id="modeTitle">练习范围</p>
+          <p class="word-count" id="wordCount">正在加载词库…</p>
+        </div>
+        <div class="segmented-control" role="group" aria-label="选择词类">
+          <button class="mode-button" data-mode="verb" type="button">动词</button>
+          <button class="mode-button" data-mode="adjective" type="button">形容词</button>
+          <button class="mode-button is-active" data-mode="all" type="button">ALL</button>
+        </div>
+      </section>
+
+      <section class="quiz-card" id="quizCard" aria-live="polite">
+        <div class="prompt-block">
+          <span class="kind-tag" id="kindTag">准备中</span>
+          <p class="prompt-label" id="promptLabel">请写出对应的日文</p>
+          <h2 id="meaning">加载词库中…</h2>
+        </div>
+
+        <form id="answerForm" class="answer-form">
+          <label for="answerInput">你的答案</label>
+          <div class="answer-row">
+            <input
+              id="answerInput"
+              name="answer"
+              type="text"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+              placeholder="输入汉字或假名"
+              disabled
+            />
+            <button class="primary-button" id="submitButton" type="submit" disabled>提交</button>
+          </div>
+          <p class="keyboard-hint">按 Enter 提交；查看答案后再按 Enter 进入下一题</p>
+        </form>
+
+        <div class="feedback" id="feedback" hidden>
+          <div class="feedback-heading">
+            <span class="result-badge" id="resultBadge"></span>
+            <div>
+              <p class="answer-main" id="answerMain"></p>
+              <p class="answer-kana" id="answerKana"></p>
+            </div>
+          </div>
+          <dl class="detail-grid" id="detailGrid"></dl>
+        </div>
+      </section>
+
+      <p class="error-message" id="errorMessage" role="alert" hidden></p>
+    </main>
+    <script src="/app.js" defer></script>
+  </body>
+</html>

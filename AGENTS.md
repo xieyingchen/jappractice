@@ -1,0 +1,5 @@
+# AGENTS.md instructions
+
+<INSTRUCTIONS>
+@RTK.md
+</INSTRUCTIONS>
