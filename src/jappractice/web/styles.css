@@ -133,6 +133,7 @@ h1 {
 .test-toolbar-buttons {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
 }
 
@@ -153,6 +154,11 @@ h1 {
 .ghost-button:hover:not(:disabled) {
   border-color: var(--accent);
   background: var(--paper);
+}
+
+.ghost-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
 .ghost-button strong {
@@ -482,6 +488,15 @@ h2 {
 
   .test-progress {
     text-align: center;
+  }
+
+  .test-toolbar-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .test-toolbar-buttons .test-start {
+    grid-column: 1 / -1;
   }
 
   .session-stats {

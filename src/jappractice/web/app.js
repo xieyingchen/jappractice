@@ -35,6 +35,7 @@ const elements = {
   modeButtons: [...document.querySelectorAll(".mode-button")],
   startButton: document.querySelector("#startButton"),
   errorListButton: document.querySelector("#errorListButton"),
+  errorTestButton: document.querySelector("#errorTestButton"),
   errorCount: document.querySelector("#errorCount"),
   testProgress: document.querySelector("#testProgress"),
   remainingCount: document.querySelector("#remainingCount"),
@@ -88,6 +89,7 @@ function updateStats() {
   elements.correctCount.textContent = state.correct;
   elements.wrongCount.textContent = state.wrong;
   elements.errorCount.textContent = state.errors.length;
+  elements.errorTestButton.disabled = state.errors.length === 0;
 }
 
 function updateProgress() {
@@ -159,8 +161,7 @@ function renderDetails(word, grid) {
   addDetail("备注", word.note, "detail-wide");
 }
 
-function startTest() {
-  const pool = filteredWords();
+function beginTest(pool) {
   if (!pool.length) {
     elements.error.hidden = false;
     elements.error.textContent = "当前词类没有可用词条，无法开始测试。";
@@ -185,6 +186,16 @@ function startTest() {
   elements.form.hidden = false;
   setModeButtonsDisabled(true);
   showPrompt(state.queue.shift());
+}
+
+function startTest() {
+  beginTest(filteredWords());
+}
+
+function startErrorTest() {
+  const errorWords = state.errors.map(({ word }) => word);
+  if (!errorWords.length) return;
+  beginTest(errorWords);
 }
 
 function nextWord() {
@@ -369,6 +380,8 @@ elements.form.addEventListener("submit", (event) => {
 
 elements.startButton.addEventListener("click", startTest);
 
+elements.errorTestButton.addEventListener("click", startErrorTest);
+
 elements.exportButton.addEventListener("click", exportErrorsCsv);
 
 elements.errorListButton.addEventListener("click", () => {
@@ -401,6 +414,7 @@ async function initialize() {
     state.words = payload.words;
     state.counts = payload.counts;
     updateModeSummary();
+    updateStats();
     showIdle();
   } catch (error) {
     elements.error.hidden = false;
