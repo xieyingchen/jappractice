@@ -13,7 +13,7 @@ class PackageSmokeTest(unittest.TestCase):
         verbs = [word for word in words if word["kind"] == "verb"]
         adjectives = [word for word in words if word["kind"] == "adjective"]
         self.assertEqual(len(verbs), 142)
-        self.assertEqual(len(adjectives), 89)
+        self.assertEqual(len(adjectives), 90)
         self.assertNotIn("すみます", {word["original"] for word in verbs})
 
     def test_answer_normalization_handles_width_and_spaces(self) -> None:
@@ -24,6 +24,14 @@ class PackageSmokeTest(unittest.TestCase):
         self.assertIn("有名", word["answers"])
         self.assertIn("有名な", word["answers"])
         self.assertIn("ゆうめい", word["answers"])
+
+    def test_osoi_is_loaded_with_inflections(self) -> None:
+        word = next(word for word in load_words() if word["original"] == "遅い")
+        self.assertEqual(word["kana"], "おそい")
+        self.assertEqual(word["accent"], "0")
+        self.assertEqual(word["conjunctive_form"], "おそく")
+        self.assertEqual(word["past_form"], "おそかった")
+        self.assertTrue({"遅い", "おそい"} <= set(word["answers"]))
 
     def test_verb_accepts_dictionary_and_masu_forms(self) -> None:
         words = load_words()
