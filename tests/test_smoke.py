@@ -12,7 +12,7 @@ class PackageSmokeTest(unittest.TestCase):
         words = load_words()
         verbs = [word for word in words if word["kind"] == "verb"]
         adjectives = [word for word in words if word["kind"] == "adjective"]
-        self.assertEqual(len(verbs), 141)
+        self.assertEqual(len(verbs), 142)
         self.assertEqual(len(adjectives), 89)
         self.assertNotIn("すみます", {word["original"] for word in verbs})
 
@@ -44,6 +44,9 @@ class PackageSmokeTest(unittest.TestCase):
             {"報告する", "ほうこくする", "報告します", "ほうこくします"}
             <= set(houkoku["answers"])
         )
+
+        nakusu = next(word for word in words if word["original"] == "なくす")
+        self.assertTrue({"なくす", "なくします"} <= set(nakusu["answers"]))
 
 
 if __name__ == "__main__":
